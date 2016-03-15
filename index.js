@@ -20,7 +20,6 @@ var svc = module.exports = {
     return errMessage;
   },
   error: function (code) {
-
     var err = new Error(svc._getErrorMessage(code));
     err.code = code;
     return err;
@@ -49,17 +48,23 @@ var svc = module.exports = {
   guardFalsyLast: function (errcode, done) {
     return svc.guardFalsy(done, errcode);
   },
-  guardSeneca: function (done, errcode) {
+  guardSeneca: function (done, errcode, useResponseError) {
     return function (err, result) {
       if(err) {
         return done(svc.wrapError(err, errcode));
       }
       if(result && result.errcode) {
         err = svc.errorFromResponse(result);
-        return done( svc.wrapError(err, errcode));
+        if(useResponseError) {
+          return done(err);
+        }
+        return done(svc.wrapError(err, errcode));
       }
       return done.apply(this, arguments);
     };
+  },
+  guardSenecaLast: function (errcode, useResponseError, done) {
+    return svc.guardSeneca(done, errcode, useResponseError);
   },
   guardRequest: function (done, errcode) {
     return function (err, res, body) {

@@ -8,15 +8,25 @@ var svc = module.exports = {
     if(_.isObject(err)) {
       return {errcode: err.code, errmsg: err.message};
     }
-    return {errcode: err, errmsg: svc.errors[err]};
+
+    return {errcode: err, errmsg: svc._getErrorMessage(err)};
+  },
+  _getErrorMessage: function (code) {
+    var errMessage = svc.errors[code];
+    if(!errMessage) {
+      errMessage = 'undefined error code ' + code;
+      console.error(errMessage);
+    }
+    return errMessage;
   },
   error: function (code) {
-    var err = new Error(svc.errors[code]);
+
+    var err = new Error(svc._getErrorMessage(code));
     err.code = code;
     return err;
   },
   wrapError: function (err, code) {
-    err = new verror.WError(err, svc.errors[code]);
+    err = new verror.WError(err, svc._getErrorMessage(code));
     err.code = code;
     return err;
   },

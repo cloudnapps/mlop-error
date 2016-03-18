@@ -4,9 +4,9 @@ var verror = require('verror'),
 
 var svc = module.exports = {
   errors: errors,
-  response: function (err) {
+  response: function (err, defaultCode) {
     if(_.isObject(err)) {
-      return {errcode: err.code, errmsg: err.message};
+      return {errcode: err.code || defaultCode, errmsg: err.message};
     }
 
     return {errcode: err, errmsg: svc._getErrorMessage(err)};

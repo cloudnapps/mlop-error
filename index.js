@@ -2,8 +2,28 @@
 var verror = require('verror'),
   errors = require('mlop-errors');
 
+function buildNameCodeMap (errors) {
+  var result = {};
+  for(var key in errors) {
+    var error = errors[key];
+    result[key] = error.code;
+  }
+  return result;
+}
+
+function buildCodeMessageMap (errors) {
+  var result = {};
+  for(var key in errors) {
+    var error = errors[key];
+    result[error.code] = error.message;
+  }
+  return result;
+}
+
 var svc = module.exports = {
-  errors: errors,
+  _codeMessages: buildCodeMessageMap(errors),
+  codes: buildNameCodeMap(errors),
+
   response: function (err, defaultCode) {
     if(_.isObject(err)) {
       return {errcode: err.code || defaultCode, errmsg: err.message};
@@ -12,7 +32,7 @@ var svc = module.exports = {
     return {errcode: err, errmsg: svc._getErrorMessage(err)};
   },
   _getErrorMessage: function (code) {
-    var errMessage = svc.errors[code];
+    var errMessage = svc._codeMessages[code];
     if(!errMessage) {
       errMessage = 'undefined error code ' + code;
       console.error(errMessage);

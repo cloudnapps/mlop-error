@@ -26,7 +26,7 @@ var svc = module.exports = {
 
   response: function (err, defaultCode) {
     if(_.isObject(err)) {
-      return {errcode: err.code || defaultCode, errmsg: err.message};
+      return {errcode: err.code || defaultCode || svc.codes.internalError, errmsg: err.message};
     }
 
     return {errcode: err, errmsg: svc._getErrorMessage(err)};

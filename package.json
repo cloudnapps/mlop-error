@@ -18,6 +18,6 @@
   "homepage": "https://github.com/cloudnapps/mlop-error#readme",
   "dependencies": {
     "mlop-errors": "cloudnapps/mlop-errors",
-    "operational-error": "gongxiancao/operational-error"
+    "operational-error": "^1.0.0"
   }
 }
